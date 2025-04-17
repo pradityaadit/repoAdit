@@ -62,7 +62,7 @@ const Main = () => {
           </div>
         </div>
       </div>
-      <div className="flex md:flex-row mt-[35px] md:mt-[45px]">
+      <div className="flex flex-col md:flex-row mt-[35px] md:mt-[45px]">
         <div className="flex md:items-start items-center justify-center md:justify-normal gap-3">
           <div className="md:w-[157px] md:h-[157px] w-[50px] h-[50px] rounded-full bg-[linear-gradient(134deg,_#3BF686_40.75%,_#4CA9FF_90.52%)] flex justify-center items-center">
             <div className="md:w-[155px] md:h-[155px] w-[49px] h-[49px]  rounded-full bg-[#3A3636]">
@@ -88,7 +88,7 @@ const Main = () => {
             </div>
           </div>
         </div>
-        <div className="mt-[35px] md:mt-0 md:ml-[86px] flex flex-col gap-3">
+        <div className="mt-[35px] md:mt-0 md:ml-[86px] gap-3">
           <div className="text-[15px] font-bold md:text-[28px] font-sora text-[#FBFBFB] md:leading-[72px]">
             Lets Connect
           </div>
