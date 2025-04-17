@@ -29,14 +29,14 @@ const Main = () => {
               encryptedClassName="encrypted"
             />
           </div>
-          <div className=" md:text-[18px] font-sora   text-[#d6d6d6] ">
+          <div className=" md:text-[18px] font-sora  text-[#d6d6d6] ">
             Create the computer applications that allow users to do specific
             tasks and the underlying systems that run the devices or control
             networks. I also do Freelance and Studying software development
           </div>
         </div>
 
-        <div className="flex items-center justify-center md:justify-normal md:flex-row  gap-[30px]  flex-[3]">
+        <div className="flex items-center gap-[30px] flex-[3] flex-wrap justify-center md:justify-normal md:flex-row  ">
           <div className="relative flex flex-col justify-center items-center px-3 pt-8 pb-4 w-[262px] bg-[#323443] rounded-[12px] mt-[36px] md:mt-0 hover:scale-110 ease-in-out duration-300">
             <div className="absolute top-[-36px] p-[1px] rounded-full bg-[linear-gradient(134deg,_#3BF686_40.75%,_#4CA9FF_90.52%)]">
               <div className="bg-[#3A3636] p-[17px] rounded-full">{globe}</div>
