@@ -27,16 +27,16 @@ const Projects = () => {
           tech="HTML, CSS, JavaScript"
         />
         <ProjectItem
-          title="Book Application"
+          title="Caffe Shop"
           backgroundImg={ProjectBackground3}
-          projectUrl="https://github.com/pradityaadit/perpustakaan"
-          tech="Laravel, Tailwind, JavaScript"
+          projectUrl="https://aromaheaven-coffeshop.vercel.app/"
+          tech="React JS, Tailwind"
         />
         <ProjectItem
-          title="Adventure Game"
+          title="Company Profile"
           backgroundImg={ProjectBackground4}
-          projectUrl="https://drive.google.com/drive/folders/1T2pRp4soCUig6KmBgHSWzPxMKg32-A4R?usp=drive_link"
-          tech="Construct 3"
+          projectUrl="https://company-profile-sigma-pied.vercel.app/"
+          tech="React JS, Tailwind"
         />
       </div>
     </div>
