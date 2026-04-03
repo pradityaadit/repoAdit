@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Component, ErrorInfo, ReactNode } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
 import {
   useGLTF,
@@ -25,6 +25,83 @@ const lanyard = "/assets/lanyard/lanyard.png";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
+// ─── Error Boundary ───────────────────────────────────────────────────────────
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class LanyardErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  ErrorBoundaryState
+> {
+  state: ErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("[Lanyard] WebGL error caught by boundary:", error.message, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? <LanyardFallback />;
+    }
+    return this.props.children;
+  }
+}
+
+// ─── Fallback UI ─────────────────────────────────────────────────────────────
+function LanyardFallback() {
+  return (
+    <div className="relative z-0 w-full h-screen flex justify-center items-center">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "16px",
+          color: "#888",
+          fontSize: "14px",
+          fontFamily: "sans-serif",
+        }}
+      >
+        <div
+          style={{
+            width: "80px",
+            height: "120px",
+            borderRadius: "8px",
+            background: "linear-gradient(135deg, #1a1a2e, #16213e)",
+            border: "1px solid #333",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span style={{ fontSize: "32px" }}>🪪</span>
+        </div>
+        <p style={{ margin: 0, opacity: 0.6 }}>WebGL tidak tersedia di browser ini</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── WebGL detection ──────────────────────────────────────────────────────────
+function isWebGLAvailable(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
+// ─── Main Lanyard Component ───────────────────────────────────────────────────
 interface LanyardProps {
   position?: [number, number, number];
   gravity?: [number, number, number];
@@ -38,61 +115,86 @@ export default function Lanyard({
   fov = 20,
   transparent = true,
 }: LanyardProps) {
+  const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setWebglSupported(isWebGLAvailable());
+  }, []);
+
+  // Masih loading (SSR safe)
+  if (webglSupported === null) {
+    return (
+      <div className="relative z-0 w-full h-screen flex justify-center items-center" />
+    );
+  }
+
+  // WebGL tidak didukung browser
+  if (!webglSupported) {
+    return <LanyardFallback />;
+  }
+
   return (
-    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
-      <Canvas
-        camera={{ position, fov }}
-        gl={{ alpha: transparent }}
-        onCreated={({ gl }) =>
-          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
-        }
-      >
-        <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={1 / 60}>
-          <Band />
-        </Physics>
-        <Environment blur={0.75}>
-          <Lightformer
-            intensity={2}
-            color="white"
-            position={[0, -1, 5]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[-1, -1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[1, 1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={10}
-            color="white"
-            position={[-10, 0, 14]}
-            rotation={[0, Math.PI / 2, Math.PI / 3]}
-            scale={[100, 10, 1]}
-          />
-        </Environment>
-      </Canvas>
-    </div>
+    <LanyardErrorBoundary fallback={<LanyardFallback />}>
+      <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
+        <Canvas
+          camera={{ position, fov }}
+          gl={{
+            alpha: transparent,
+            antialias: false,
+            powerPreference: "high-performance",
+            failIfMajorPerformanceCaveat: false,
+          }}
+          onCreated={({ gl }) =>
+            gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
+          }
+        >
+          <ambientLight intensity={Math.PI} />
+          <Physics gravity={gravity} timeStep={1 / 60}>
+            <Band />
+          </Physics>
+          <Environment blur={0.75}>
+            <Lightformer
+              intensity={2}
+              color="white"
+              position={[0, -1, 5]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={3}
+              color="white"
+              position={[-1, -1, 1]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={3}
+              color="white"
+              position={[1, 1, 1]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={10}
+              color="white"
+              position={[-10, 0, 14]}
+              rotation={[0, Math.PI / 2, Math.PI / 3]}
+              scale={[100, 10, 1]}
+            />
+          </Environment>
+        </Canvas>
+      </div>
+    </LanyardErrorBoundary>
   );
 }
 
+// ─── Band (physics rope + card) ───────────────────────────────────────────────
 interface BandProps {
   maxSpeed?: number;
   minSpeed?: number;
 }
 
 function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
-  // Using "any" for refs since the exact types depend on Rapier's internals
   const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
