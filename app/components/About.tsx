@@ -2,7 +2,7 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 
 const bioText =
-  "Welcome to my portfolio! I'm Praditya Oktanza, a passionate Front-End Developer and a sixth-semester Informatics Engineering student. I love crafting beautiful, responsive, and interactive web experiences that bring ideas to life. My journey in coding started with a deep curiosity about how websites work — and over time, I've honed my skills in HTML, CSS, JavaScript, and modern front-end frameworks. Problem-solving excites me, and I enjoy turning complex designs into smooth, user-friendly interfaces. When I'm not coding, you'll probably find me at the gym, staying active and pushing my limits. I believe discipline and consistency — both in fitness and coding — are key to continuous growth. Currently exploring the latest front-end technologies and best practices to keep improving my craft. Let's connect and create something awesome together! 🚀";
+  "Welcome to my portfolio! I'm Praditya Oktanza, a passionate Front-End Developer and a fresh graduate of Informatics Engineering. I love crafting beautiful, responsive, and interactive web experiences that bring ideas to life. My journey in coding started with a deep curiosity about how websites work — and over time, I've honed my skills in HTML, CSS, JavaScript, and modern front-end frameworks. Problem-solving excites me, and I enjoy turning complex designs into smooth, user-friendly interfaces. When I'm not coding, you'll probably find me at the gym, staying active and pushing my limits. I believe discipline and consistency — both in fitness and coding — are key to continuous growth. Currently exploring the latest front-end technologies and best practices to keep improving my craft. Let's connect and create something awesome together! 🚀";
 
 const skills = [
   { label: "HTML & CSS", color: "#f97316" },
@@ -33,7 +33,7 @@ const infoItems = [
       </svg>
     ),
     label: "Education",
-    value: "Informatics Engineering · Semester 6",
+    value: "Informatics Engineering",
   },
   {
     icon: (
