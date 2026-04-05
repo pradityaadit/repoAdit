@@ -133,6 +133,8 @@ const infoItems = [
   },
 ];
 
+import { useScroll, useMotionValueEvent } from "framer-motion";
+
 // Split text into individually-hoverable chars
 interface RevealTextProps {
   text: string;
@@ -140,10 +142,35 @@ interface RevealTextProps {
 
 const RevealText = ({ text }: RevealTextProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [scrollProgressIndex, setScrollProgressIndex] = useState<number | null>(
+    null,
+  );
   const containerRef = useRef<HTMLParagraphElement>(null);
+
+  // For scroll progress on mobile
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 80%", "end 50%"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    // Only apply scroll reveal on mobile/tablet (<= 768px)
+    if (window.innerWidth <= 768) {
+      if (latest > 0) {
+        setScrollProgressIndex(Math.floor(latest * text.length));
+      } else {
+        setScrollProgressIndex(null);
+      }
+    } else {
+      setScrollProgressIndex(null);
+    }
+  });
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLParagraphElement>) => {
+      // Don't apply hover effect on mobile
+      if (window.innerWidth <= 768) return;
+
       const container = containerRef.current;
       if (!container) return;
       const spans = container.querySelectorAll("[data-char-index]");
@@ -182,12 +209,17 @@ const RevealText = ({ text }: RevealTextProps) => {
     >
       {Array.from(text).map((char, i) => {
         let opacity = 0.18;
+
         if (hoveredIndex !== null) {
+          // Desktop hover logic
           const dist = Math.abs(i - hoveredIndex);
-          // map dist 0→0, RADIUS→dim
           const t = Math.max(0, 1 - dist / (RADIUS / 6));
           opacity = 0.18 + 0.82 * t;
+        } else if (scrollProgressIndex !== null) {
+          // Mobile scroll logic
+          opacity = i <= scrollProgressIndex ? 1 : 0.18;
         }
+
         return (
           <span
             key={i}

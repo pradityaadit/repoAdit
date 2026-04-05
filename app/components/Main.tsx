@@ -153,7 +153,7 @@ const Main = () => {
               {/* Social icons */}
               <div className="flex gap-3">
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/prdty.aditt/"
                   target="_blank"
                   rel="noreferrer"
                   className="social-btn"
@@ -210,7 +210,7 @@ const Main = () => {
                   </svg>
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/praditya-adit-7a4527290/"
                   target="_blank"
                   rel="noreferrer"
                   className="social-btn"
